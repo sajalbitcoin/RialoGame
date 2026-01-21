@@ -139,6 +139,46 @@ function play(){
     requestAnimationFrame(create_pipe);
 
 }
+// ... existing variables at the top ...
+let score_val = document.querySelector('.score_val');
+let high_score_val = document.querySelector('.high_score_val'); // New variable
+let message = document.querySelector('.message');
+let score_title = document.querySelector('.score_title');
+
+// Initialize High Score from LocalStorage
+let highScore = localStorage.getItem('rialoHighScore') || 0;
+high_score_val.innerHTML = highScore;
+
+let game_state = 'Start';
+// ... (rest of your existing setup code) ...
+
+// Locate the section inside the play() -> move() function where game ends
+// Update it to handle the high score:
+
+if (bird_props.left < pipe_sprite_props.left + pipe_sprite_props.width && 
+    bird_props.left + bird_props.width > pipe_sprite_props.left && 
+    bird_props.top < pipe_sprite_props.top + pipe_sprite_props.height && 
+    bird_props.top + bird_props.height > pipe_sprite_props.top) {
+    
+    game_state = 'End';
+    
+    // --- LEADERBOARD LOGIC START ---
+    let finalScore = parseInt(score_val.innerHTML);
+    if (finalScore > highScore) {
+        highScore = finalScore;
+        localStorage.setItem('rialoHighScore', highScore);
+        high_score_val.innerHTML = highScore;
+        message.innerHTML = 'NEW HIGH SCORE!'.fontcolor('gold') + '<br>Click Enter To Restart';
+    } else {
+        message.innerHTML = 'Game Over Mate'.fontcolor('red') + '<br>Click Enter To Restart';
+    }
+    // --- LEADERBOARD LOGIC END ---
+
+    message.classList.add('messageStyle');
+    img.style.display = 'none';
+    sound_die.play();
+    return;
+}
 
 
 
